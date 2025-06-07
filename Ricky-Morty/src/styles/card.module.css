@@ -1,0 +1,28 @@
+.card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background: white;
+  height: 100%;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.cardContent {
+  padding: 1rem;
+}
+
+.cardTitle {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.cardDetails {
+  margin: 0.25rem 0;
+  color: #666;
+  font-size: 0.9rem;
+}
