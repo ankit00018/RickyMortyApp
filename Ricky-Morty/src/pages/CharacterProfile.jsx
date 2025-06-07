@@ -14,7 +14,7 @@ const CharacterProfile = () => {
   return (
     <div>
       <h2>{character.name}</h2>
-      <img src={character.image} alt={character.name} />
+      <img src={character.image} alt={character.name}  style={{ display: 'block', margin: '0 auto' }} />
       <p><strong>Status: </strong>{character.status}</p>
       <p><strong>Species: </strong>{character.species}</p>
       <p><strong>Gender: </strong>{character.gender}</p>
