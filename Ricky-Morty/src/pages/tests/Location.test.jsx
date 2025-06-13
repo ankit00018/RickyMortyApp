@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import Locations from "../pages/Locations";
-import useLocations from "../hooks/useLocations";
+import Locations from "../Locations";
+import useLocations from "../../hooks/useLocations";
 
 vi.mock("../hooks/useLocations");
 

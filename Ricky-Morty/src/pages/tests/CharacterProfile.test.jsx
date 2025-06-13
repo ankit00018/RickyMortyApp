@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import CharacterProfile from "../pages/CharacterProfile";
-import useCharacterProfile from "../hooks/useCharacterProfile";
+import CharacterProfile from "../CharacterProfile";
+import useCharacterProfile from "../../hooks/useCharacterProfile";
 import { useParams } from "react-router-dom";
 
 vi.mock("../hooks/useCharacterProfile");

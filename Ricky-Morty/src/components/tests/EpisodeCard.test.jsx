@@ -2,7 +2,7 @@
 import React from 'react';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import EpisodeCard from './EpisodeCard';
+import EpisodeCard from '../EpisodeCard';
 
 describe('EpisodeCard Component', () => {
   const mockEpisode = {

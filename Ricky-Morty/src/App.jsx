@@ -6,7 +6,7 @@ const CharacterProfile = React.lazy(() => import("./pages/CharacterProfile"));
 const Home = React.lazy(() => import("./pages/Home"));
 const Locations = React.lazy(() => import("./pages/Locations"));
 const Episodes = React.lazy(() => import("./pages/Episodes"));
-import ErrorBoundary from "./utils/ErrorBoundary";
+import ErrorBoundary from "./utils/ErrorBoundary"
 
 import Navbar from "./components/Navbar";
 import { Route, Routes } from "react-router-dom";

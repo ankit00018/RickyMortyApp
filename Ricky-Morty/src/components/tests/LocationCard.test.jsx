@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import LocationCard from "./LocationCard"; // adjust the path if needed
+import LocationCard from "../LocationCard"; // adjust the path if needed
 
 describe("LocationCard Component", () => {
   const mockLocation = {

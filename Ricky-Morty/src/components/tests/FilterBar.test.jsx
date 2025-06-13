@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import FilterBar from "../components/FilterBar";
+import FilterBar from "../FilterBar";
 
 describe("FilterBar component", () => {
   const filters = {

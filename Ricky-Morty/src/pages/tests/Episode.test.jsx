@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import Episodes from "../pages/Episodes";
-import useEpisodes from "../hooks/useEpisode";
+import Episodes from "../Episodes";
+import useEpisodes from "../../hooks/useEpisode";
 
 vi.mock("../hooks/useEpisode");
 

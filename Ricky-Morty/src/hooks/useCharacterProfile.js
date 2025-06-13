@@ -1,48 +1,35 @@
-// Custom hook to fetch full character profile + episode data using character ID
-
+// hooks/useCharacterProfile.js
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { fetchCharacterById, fetchEpisodesByIds } from "../services/api.js";
 
 const useCharacterProfile = (id) => {
-  const [character, setCharacter] = useState(null); // holds main character data
-  const [episodes, setEpisodes] = useState([]); // holds all episodes character appears in
-  const [loading, setLoading] = useState(true); // loading state for feedback
+  const [character, setCharacter] = useState(null);
+  const [episodes, setEpisodes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCharacter = async () => {
+    const fetchProfile = async () => {
+      setLoading(true);
       try {
-        //Fetch the selected character by ID
-        const res = await axios.get(
-          `https://rickandmortyapi.com/api/character/${id}`
-        );
-        setCharacter(res.data);
+        const characterData = await fetchCharacterById(id);
+        setCharacter(characterData);
 
-        //Extract all episode IDs from character data
-        const episodeIds = res.data.episode.map((url) => url.split("/").pop());
-
-        //Fetch all episodes in a single request (Rick & Morty API allows batch fetching)
-        const episodeRes = await axios.get(
-          `https://rickandmortyapi.com/api/episode/${episodeIds.join(",")}`
+        const episodeIds = characterData.episode.map((url) =>
+          url.split("/").pop()
         );
 
-        //Normalize response — if it's a single episode, wrap in array
-        setEpisodes(
-          Array.isArray(episodeRes.data) ? episodeRes.data : [episodeRes.data]
-        );
+        const episodeData = await fetchEpisodesByIds(episodeIds);
+        setEpisodes(episodeData);
       } catch (err) {
-        // handle any fetch errors
-        console.log("Error fetching profile:", err);
+        console.error("Error fetching character profile:", err);
       } finally {
-        //success or error, we're done loading
         setLoading(false);
       }
     };
 
-    // Re-run this effect if character ID changes
-    fetchCharacter();
+    fetchProfile();
   }, [id]);
 
-  // Return full character object + episodes + loading state
   return { character, episodes, loading };
 };
 

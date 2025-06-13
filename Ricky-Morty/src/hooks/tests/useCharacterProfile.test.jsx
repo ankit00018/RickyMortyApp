@@ -1,9 +1,9 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
-import axios from 'axios';
-import useCharacterProfile from './useCharacterProfile';
+import * as api from '../../services/api'; // <-- Adjust this path if needed
+import useCharacterProfile from '../useCharacterProfile';
 
-vi.mock('axios');
+vi.mock('../services/api'); // 👈 Mock your API service
 
 describe('useCharacterProfile', () => {
   afterEach(() => {
@@ -11,27 +11,20 @@ describe('useCharacterProfile', () => {
   });
 
   it('fetches character and episodes data', async () => {
-    axios.get.mockImplementationOnce(() =>
-      Promise.resolve({
-        data: {
-          id: 1,
-          name: 'Rick Sanchez',
-          episode: [
-            'https://rickandmortyapi.com/api/episode/1',
-            'https://rickandmortyapi.com/api/episode/2',
-          ],
-        },
-      })
-    );
+    // Mock the API functions
+    api.fetchCharacterById.mockResolvedValue({
+      id: 1,
+      name: 'Rick Sanchez',
+      episode: [
+        'https://rickandmortyapi.com/api/episode/1',
+        'https://rickandmortyapi.com/api/episode/2',
+      ],
+    });
 
-    axios.get.mockImplementationOnce(() =>
-      Promise.resolve({
-        data: [
-          { id: 1, name: 'Pilot' },
-          { id: 2, name: 'Lawnmower Dog' },
-        ],
-      })
-    );
+    api.fetchEpisodesByIds.mockResolvedValue([
+      { id: 1, name: 'Pilot' },
+      { id: 2, name: 'Lawnmower Dog' },
+    ]);
 
     const { result } = renderHook(() => useCharacterProfile(1));
 
@@ -45,7 +38,7 @@ describe('useCharacterProfile', () => {
   });
 
   it('handles fetch error gracefully', async () => {
-    axios.get.mockRejectedValueOnce(new Error('API error'));
+    api.fetchCharacterById.mockRejectedValue(new Error('API error'));
 
     const { result } = renderHook(() => useCharacterProfile(9999));
 
