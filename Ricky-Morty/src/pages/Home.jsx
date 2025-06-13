@@ -9,6 +9,7 @@ const FilterBar = React.lazy(() => import("../components/FilterBar"));
 const SearchBar = React.lazy(() => import("../components/SearchBar"));
 
 import useCharacterData from "../hooks/useCharacterData";
+import useDebounce from "../hooks/useDebounce";
 import buttonStyles from "../styles/button.module.css";
 import gridStyles from "../styles/grid.module.css"
 import containerStyles from "../styles/container.module.css";
@@ -26,11 +27,12 @@ const Home = () => {
   });
   const [search, setSearch] = useState(""); // Input text for character search
   const [page, setPage] = useState(1); // For pagination (load more)
+  const debounceSearch = useDebounce(search,1000)
 
   // Fetch character data using filters, search term, and current page
   const { character, loading, hasMore } = useCharacterData(
     filters,
-    search,
+    debounceSearch,
     page
   );
 

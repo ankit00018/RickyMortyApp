@@ -6,10 +6,12 @@ import gridStyles from "../styles/grid.module.css";
 import inputStyles from "../styles/input.module.css";
 import cardStyles from "../styles/card.module.css";
 import containerStyles from "../styles/container.module.css";
+import useDebounce from "../hooks/useDebounce";
 
 const Episodes = () => {
   const [search, setSearch] = useState(""); // Local state for search input
-  const { episodes, loading, error } = useEpisodes(search); // Local state for search input
+  const debounceSearch = useDebounce(search, 500);
+  const { episodes, loading, error } = useEpisodes(debounceSearch); // Local state for search input
 
   return (
     <div className={containerStyles.container}>
@@ -29,7 +31,7 @@ const Episodes = () => {
       ) : error ? (
         <p>{error}</p>
       ) : (
-        <div className={gridStyles.grid} style={{color:"black"}}>
+        <div className={gridStyles.grid} style={{ color: "black" }}>
           {episodes.map((ep) => (
             <div key={ep.id} className={cardStyles.card}>
               <div className={cardStyles.cardContent}>

@@ -6,10 +6,12 @@ import gridStyles from "../styles/grid.module.css";
 import inputStyles from "../styles/input.module.css";
 import cardStyles from "../styles/card.module.css";
 import containerStyles from "../styles/container.module.css";
+import useDebounce from "../hooks/useDebounce";
 
 const Locations = () => {
   const [search, setSearch] = useState(""); // Search input state
-  const { locationData, loading, error } = useLocations(search); // Hook to fetch location data
+  const debounceSearch = useDebounce(search,500)
+  const { locationData, loading, error } = useLocations(debounceSearch); // Hook to fetch location data
 
   return (
     <div className={containerStyles.container}>
