@@ -1,44 +1,55 @@
-import { renderHook, waitFor } from '@testing-library/react';
-import { vi } from 'vitest';
-import * as api from '../../services/api'; // Adjust path as needed
-import useLocations from '../useLocations';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { renderHook, waitFor } from "@testing-library/react";
+import useEpisodes from "../useEpisode.js"; 
+import * as api from "../../services/api.js"; 
 
-vi.mock('../services/api'); // Mocking the API module
+vi.mock("../../services/api.js");
 
-describe('useLocations', () => {
-  afterEach(() => {
+describe("useEpisodes Hook", () => {
+  beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('fetches and returns location data successfully', async () => {
-    // Mock resolved value
-    api.fetchLocationsByName.mockResolvedValue([
-      { id: 1, name: 'Earth (C-137)' },
-      { id: 2, name: 'Abadango' },
-    ]);
+  it("fetches episodes successfully when search is provided", async () => {
+    // Arrange: mock API to return episodes
+    const fakeEpisodes = [{ id: 1, name: "Pilot" }, { id: 2, name: "Lawnmower Dog" }];
+    api.fetchEpisodesByName.mockResolvedValue(fakeEpisodes);
 
-    const { result } = renderHook(() => useLocations('earth'));
+    // Act: render hook with search term
+    const { result } = renderHook(() => useEpisodes("pilot"));
 
-    expect(result.current.loading).toBe(true); // initial state
+    // Assert: wait for episodes state update
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+      expect(result.current.episodes).toEqual(fakeEpisodes);
+      expect(result.current.error).toBe("");
+    });
 
-    await waitFor(() => expect(result.current.loading).toBe(false));
-
-    expect(result.current.locationData.length).toBe(2);
-    expect(result.current.locationData[0]).toMatchObject({ name: 'Earth (C-137)' });
-    expect(result.current.error).toBe('');
+    // Also, the API should have been called once with "pilot"
+    expect(api.fetchEpisodesByName).toHaveBeenCalledWith("pilot");
   });
 
-  it('handles API error gracefully', async () => {
-    // Simulate failed API call
-    api.fetchLocationsByName.mockRejectedValue(new Error('API Error'));
+  it("handles API failure gracefully", async () => {
+    // Arrange: mock API to reject
+    api.fetchEpisodesByName.mockRejectedValue(new Error("API failed"));
 
-    const { result } = renderHook(() => useLocations('wrong-location'));
+    const { result } = renderHook(() => useEpisodes("failtest"));
 
-    expect(result.current.loading).toBe(true);
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+      expect(result.current.episodes).toEqual([]);
+      expect(result.current.error).toBe("No episode data found");
+    });
 
-    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(api.fetchEpisodesByName).toHaveBeenCalledWith("failtest");
+  });
 
-    expect(result.current.locationData).toEqual([]);
-    expect(result.current.error).toBe('No location found.');
+  it("does not fetch and resets states when search is empty", () => {
+    const { result } = renderHook(() => useEpisodes(""));
+
+    expect(result.current.loading).toBe(false);
+    expect(result.current.episodes).toEqual([]);
+    expect(result.current.error).toBe("");
+    expect(api.fetchEpisodesByName).not.toHaveBeenCalled();
   });
 });

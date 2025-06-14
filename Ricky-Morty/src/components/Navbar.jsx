@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <nav style={{ padding: "1rem", background: "#20232a", color: "#fff" }}>
+    <nav style={{ padding: "1rem", background: "#20232a", color: "#fff" }} className="navbar">
       {/* Navigation Links */}
 
       <Link to="/" style={{ margin: "0 1rem", color: "#61dafb" }}>

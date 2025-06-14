@@ -35,13 +35,13 @@ const CharacterProfile = () => {
       <hr />
        {/* List all episodes this character appeared in */}
       <h3>Episodes</h3>
-      <ul>
+      <ol>
         {episodes.map((episode) => (
           <li key={episode.id}>
             {episode.name} (Air date: {episode.air_date})
           </li>
         ))}
-      </ul>
+      </ol>
     </div>
   );
 };

@@ -26,7 +26,7 @@ const Episodes = () => {
       />
 
       {/* Conditional rendering for UI feedback */}
-      {loading ? (
+       {loading ? (
         <p>Loading...</p>
       ) : error ? (
         <p>{error}</p>

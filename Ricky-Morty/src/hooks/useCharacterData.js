@@ -7,6 +7,20 @@ const useCharacterData = (filters, search, page) => {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
 
+  const filterByLocationAndEpisode = (characters, location, episode) => {
+    return characters.filter((char) => {
+      const locationMatch = location
+        ? char.location.name.toLowerCase().includes(location.toLowerCase())
+        : true;
+      const episodeMatch = episode
+        ? char.episode.some((epUrl) =>
+            epUrl.toLowerCase().includes(episode.toLowerCase())
+          )
+        : true;
+      return locationMatch && episodeMatch;
+    });
+  };
+
   useEffect(() => {
     const fetchCharacter = async () => {
       setLoading(true);
@@ -14,10 +28,18 @@ const useCharacterData = (filters, search, page) => {
       try {
         const data = await fetchCharacters(filters, search, page);
 
-        setCharacter((prev) =>
-          page === 1 ? data.results : [...prev, ...data.results]
+        let filteredResults = data.results;
+        // filter location and episode client-side
+        filteredResults = filterByLocationAndEpisode(
+          filteredResults,
+          filters.location,
+          filters.episode
         );
-        setHasMore(!!data.info.next);
+
+        setCharacter((prev) =>
+          page === 1 ? filteredResults : [...prev, ...filteredResults]
+        );
+        setHasMore(!!data.info.next && filteredResults.length > 0);
       } catch (err) {
         setCharacter([]);
         setHasMore(false);

@@ -1,0 +1,20 @@
+.filterbar {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+  width: 100%;
+  max-width: 1060px;
+  box-sizing: border-box;
+  justify-content: center; 
+  margin: 0 auto;
+  /* Prevent layout shift on load */
+  min-height: 130px;
+  transition: all 0.3s ease-in-out;
+}
+
+@media (max-width: 1024px) {
+  .filterbar {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}

@@ -1,43 +1,66 @@
-import { renderHook, waitFor } from '@testing-library/react';
-import { vi } from 'vitest';
-import * as api from '../../services/api'; // Make sure this path is correct
-import useLocations from '../useLocations';
+// __tests__/useLocations.test.jsx
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { renderHook, waitFor } from "@testing-library/react";
+import useLocations from "../useLocations.js"; 
+import * as api from "../../services/api.js";
 
-vi.mock('../services/api'); // Mock the entire API service
+vi.mock("../../services/api.js");
 
-describe('useLocations', () => {
-  afterEach(() => {
-    vi.clearAllMocks(); // Reset mocks between tests
+describe("useLocations Hook", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  it('should fetch and return location data on success', async () => {
-    // Mock the resolved API data
-    api.fetchLocationsByName.mockResolvedValue([
-      { id: 1, name: 'Earth (C-137)' },
-      { id: 2, name: 'Gazorpazorp' },
-    ]);
+  it("fetches location data successfully when search is provided", async () => {
+    const fakeLocations = [
+      { id: 1, name: "Earth (C-137)" },
+      { id: 2, name: "Abadango" },
+    ];
+    api.fetchLocationsByName.mockResolvedValue(fakeLocations);
 
-    const { result } = renderHook(() => useLocations('earth'));
+    const { result } = renderHook(() => useLocations("Earth"));
 
-    expect(result.current.loading).toBe(true);
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+      expect(result.current.locationData).toEqual(fakeLocations);
+      expect(result.current.error).toBe("");
+    });
+
+    expect(api.fetchLocationsByName).toHaveBeenCalledWith("Earth");
+  });
+
+  it("handles API failure correctly", async () => {
+    api.fetchLocationsByName.mockRejectedValue(new Error("API failure"));
+
+    const { result } = renderHook(() => useLocations("unknown"));
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+      expect(result.current.locationData).toEqual([]);
+      expect(result.current.error).toBe("No location found.");
+    });
+
+    expect(api.fetchLocationsByName).toHaveBeenCalledWith("unknown");
+  });
+
+  it("starts loading and fetches data when search changes", async () => {
+    // mock API with some dummy data
+    api.fetchLocationsByName.mockResolvedValue([{ id: 3, name: "Test Location" }]);
+
+    const { result, rerender } = renderHook(({ search }) => useLocations(search), {
+      initialProps: { search: "Test" },
+    });
 
     await waitFor(() => expect(result.current.loading).toBe(false));
 
-    expect(result.current.locationData).toHaveLength(2);
-    expect(result.current.locationData[0].name).toBe('Earth (C-137)');
-    expect(result.current.error).toBe('');
-  });
+    expect(result.current.locationData.length).toBeGreaterThan(0);
 
-  it('should handle fetch error and set error message', async () => {
-    api.fetchLocationsByName.mockRejectedValue(new Error('API Error'));
-
-    const { result } = renderHook(() => useLocations('unknown-place'));
-
-    expect(result.current.loading).toBe(true);
+    // Rerender with a different search value
+    api.fetchLocationsByName.mockResolvedValue([{ id: 4, name: "Another Location" }]);
+    rerender({ search: "Another" });
 
     await waitFor(() => expect(result.current.loading).toBe(false));
 
-    expect(result.current.locationData).toEqual([]);
-    expect(result.current.error).toBe('No location found.');
+    expect(result.current.locationData[0].name).toBe("Another Location");
   });
 });

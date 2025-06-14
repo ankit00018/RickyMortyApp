@@ -1,4 +1,3 @@
-// src/components/CharacterCard.test.jsx
 import React from 'react';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
@@ -14,19 +13,21 @@ describe('CharacterCard Component', () => {
     image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
   };
 
-  const renderComponent = () => {
-    return render(
+  const renderComponent = () =>
+    render(
       <MemoryRouter>
         <CharacterCard character={mockCharacter} />
       </MemoryRouter>
     );
-  };
 
-  it('renders character information correctly', () => {
+  it('renders character name and status-species', () => {
     renderComponent();
-    
     expect(screen.getByText('Rick Sanchez')).toBeInTheDocument();
     expect(screen.getByText('Alive - Human')).toBeInTheDocument();
+  });
+
+  it('renders character image with correct src and alt', () => {
+    renderComponent();
     const image = screen.getByAltText('Rick Sanchez');
     expect(image).toBeInTheDocument();
     expect(image).toHaveAttribute('src', mockCharacter.image);
@@ -34,10 +35,11 @@ describe('CharacterCard Component', () => {
 
   it('has correct navigation link', () => {
     renderComponent();
-    expect(screen.getByRole('link')).toHaveAttribute('href', '/character/1');
+    const link = screen.getByRole('link');
+    expect(link).toHaveAttribute('href', '/character/1');
   });
 
-  it('maintains image aspect ratio', () => {
+  it('applies image styles correctly', () => {
     renderComponent();
     const image = screen.getByAltText('Rick Sanchez');
     expect(image).toHaveStyle('width: 100%');

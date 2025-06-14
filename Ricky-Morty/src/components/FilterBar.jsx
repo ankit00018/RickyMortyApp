@@ -1,4 +1,5 @@
 import inputStyles from "../styles/input.module.css";
+import styles from "../styles/filterbar.module.css";
 
 const FilterBar = ({ filters, setFilters }) => {
   const handleChange = (e) => {
@@ -7,7 +8,7 @@ const FilterBar = ({ filters, setFilters }) => {
   };
 
   return (
-    <div
+    <div className={styles.filterbar}
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",

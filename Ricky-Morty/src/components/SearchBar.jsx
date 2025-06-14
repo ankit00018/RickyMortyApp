@@ -7,7 +7,7 @@ import inputStyles from "../styles/input.module.css";
 
 const SearchBar = ({ value, onChange }) => {
   return (
-    <div style={{ padding: "1rem", textAlign: "center" }}>
+    <div style={{ padding: "1rem", textAlign: "center" }} className="searchbar">
 
       {/* Search input field — styled for clean look and responsiveness */}
       <input

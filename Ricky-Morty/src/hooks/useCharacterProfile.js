@@ -1,4 +1,3 @@
-// hooks/useCharacterProfile.js
 import { useEffect, useState } from "react";
 import { fetchCharacterById, fetchEpisodesByIds } from "../services/api.js";
 
@@ -10,6 +9,8 @@ const useCharacterProfile = (id) => {
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
+      setCharacter(null);  // Reset on new fetch
+      setEpisodes([]);     // Reset episodes as well
       try {
         const characterData = await fetchCharacterById(id);
         setCharacter(characterData);
@@ -22,12 +23,21 @@ const useCharacterProfile = (id) => {
         setEpisodes(episodeData);
       } catch (err) {
         console.error("Error fetching character profile:", err);
+        setCharacter(null);
+        setEpisodes([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProfile();
+    if (id) {
+      fetchProfile();
+    } else {
+      // If no id, reset state
+      setCharacter(null);
+      setEpisodes([]);
+      setLoading(false);
+    }
   }, [id]);
 
   return { character, episodes, loading };

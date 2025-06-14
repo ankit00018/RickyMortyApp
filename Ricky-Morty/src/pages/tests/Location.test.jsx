@@ -1,66 +1,121 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Locations from "../Locations";
-import useLocations from "../../hooks/useLocations";
+import * as useLocationsHook from "../../hooks/useLocations";
 
-vi.mock("../hooks/useLocations");
+// Mock the hooks
+vi.mock("../../hooks/useLocations");
+vi.mock("../../hooks/useDebounce", () => ({
+  default: (value) => value
+}));
 
 describe("Locations component", () => {
+  const mockLocations = [
+    {
+      id: 1,
+      name: "Earth",
+      type: "Planet",
+      dimension: "Dimension C-137",
+      residents: ["resident1", "resident2"],
+    },
+    {
+      id: 2,
+      name: "Mars",
+      type: "Planet",
+      dimension: "Dimension C-138",
+      residents: ["resident3"],
+    },
+  ];
+
   beforeEach(() => {
     vi.clearAllMocks();
+    useLocationsHook.default = vi.fn().mockReturnValue({
+      loading: false,
+      error: null,
+      locationData: [],
+    });
   });
 
   it("renders loading state", () => {
-    useLocations.mockReturnValue({
-      locationData: [],
+    useLocationsHook.default = vi.fn().mockReturnValue({
       loading: true,
-      error: "",
-    });
-    render(<Locations />);
-    expect(screen.getByText(/loading.../i)).toBeInTheDocument();
-  });
-
-  it("renders error message", () => {
-    useLocations.mockReturnValue({
+      error: null,
       locationData: [],
-      loading: false,
-      error: "No location found.",
     });
+
     render(<Locations />);
-    expect(screen.getByText(/no location found/i)).toBeInTheDocument();
+    expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
 
-  it("renders locations list", () => {
-    const mockLocations = [
-      {
-        id: 1,
-        name: "Earth (C-137)",
-        type: "Planet",
-        dimension: "Dimension C-137",
-        residents: ["url1", "url2"],
-      },
-    ];
-    useLocations.mockReturnValue({
-      locationData: mockLocations,
+  it("renders error state", () => {
+    useLocationsHook.default = vi.fn().mockReturnValue({
       loading: false,
-      error: "",
+      error: "Failed to fetch locations",
+      locationData: [],
     });
+
     render(<Locations />);
-    expect(screen.getByText(/earth \(c-137\)/i)).toBeInTheDocument();
-    expect(screen.getByText(/planet/i)).toBeInTheDocument();
-    expect(screen.getByText(/dimension c-137/i)).toBeInTheDocument();
-    const residentsElement = screen.getByText(/residents:/i).closest("p"); 
-    expect(residentsElement).toHaveTextContent("2");
+    expect(screen.getByText("Failed to fetch locations")).toBeInTheDocument();
+  });
+
+  it("renders list of locations", () => {
+    useLocationsHook.default = vi.fn().mockReturnValue({
+      loading: false,
+      error: null,
+      locationData: mockLocations,
+    });
+
+    render(<Locations />);
+
+    // Check location names
+    expect(screen.getByText("Earth")).toBeInTheDocument();
+    expect(screen.getByText("Mars")).toBeInTheDocument();
+
+    // Check details using function matcher for split text nodes
+    expect(
+      screen.getAllByText((_, node) =>
+        node.textContent === "Type: Planet"
+      )
+    ).toHaveLength(2);
+
+    expect(
+      screen.getByText((_, node) =>
+        node.textContent === "Dimension: Dimension C-137"
+      )
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText((_, node) =>
+        node.textContent === "Dimension: Dimension C-138"
+      )
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText((_, node) =>
+        node.textContent === "Residents: 2"
+      )
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText((_, node) =>
+        node.textContent === "Residents: 1"
+      )
+    ).toBeInTheDocument();
   });
 
   it("updates search input", () => {
-    useLocations.mockReturnValue({
-      locationData: [],
+    useLocationsHook.default = vi.fn().mockReturnValue({
       loading: false,
-      error: "",
+      error: null,
+      locationData: mockLocations,
     });
+
     render(<Locations />);
-    const input = screen.getByPlaceholderText(/search location/i);
-    fireEvent.change(input, { target: { value: "Earth" } });
-    expect(input.value).toBe("Earth");
+    
+    const searchInput = screen.getByPlaceholderText("Search Location");
+    fireEvent.change(searchInput, { target: { value: "Earth" } });
+    
+    expect(searchInput).toHaveValue("Earth");
+    expect(useLocationsHook.default).toHaveBeenCalledWith("Earth");
   });
 });

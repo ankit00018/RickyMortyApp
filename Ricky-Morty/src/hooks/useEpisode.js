@@ -8,6 +8,15 @@ const useEpisodes = (search) => {
   const [error, setError] = useState(""); // error message if fetch fails
 
   useEffect(() => {
+
+    // If search is empty, reset states and do not fetch
+    if (!search) {
+      setEpisodes([]);
+      setLoading(false);
+      setError("");
+      return;
+    }
+    
     // Fetch episode data from API based on name
     const fetchData = async () => {
       setLoading(true); // show loading while request is pending

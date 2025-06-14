@@ -3,7 +3,7 @@
   gap: 1.5rem;
 
   /* Mobile first: 2 columns */
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, 1fr);
   padding: 1rem; /* optional */
 }
 
