@@ -37,7 +37,13 @@ const Home = ({ search, filters }) => {
         <Suspense fallback={<div>Loading Characters...</div>}>
           <div className={gridStyles.grid}>
             {loading && page === 1 ? (
-              <p>Loading...</p>
+             <div style={{ 
+                width: "100%", 
+                textAlign: "center", 
+                gridColumn: "1 / -1" // This makes the loading span all columns in the grid
+              }}>
+                Loading...
+              </div>
             ) : character.length > 0 ? (
               character.map((c) => (
                 <CharacterCard key={`${c.id}-${page}`} character={c} />
