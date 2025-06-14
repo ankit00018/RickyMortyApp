@@ -1,4 +1,3 @@
-// tests/CharacterProfile.test.jsx
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { useParams } from 'react-router-dom';

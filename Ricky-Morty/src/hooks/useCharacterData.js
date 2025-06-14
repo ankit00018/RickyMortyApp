@@ -1,6 +1,5 @@
-// hooks/useCharacterData.js
 import { useEffect, useState } from "react";
-import { fetchCharacters } from "../services/api"; // centralized call
+import { fetchCharacters } from "../services/api"; 
 
 const useCharacterData = (filters, search, page) => {
   const [character, setCharacter] = useState([]);

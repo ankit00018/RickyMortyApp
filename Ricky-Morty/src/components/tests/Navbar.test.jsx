@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom"; // needed to wrap for Link components
-import Navbar from "../Navbar"; // adjust path if needed
+import { MemoryRouter } from "react-router-dom"; 
+import Navbar from "../Navbar"; 
 
 describe("Navbar Component", () => {
   it("renders navigation links with correct hrefs", () => {

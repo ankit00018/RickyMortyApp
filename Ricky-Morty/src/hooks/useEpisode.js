@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchEpisodesByName } from "../services/api.js"; // centralized API call
+import { fetchEpisodesByName } from "../services/api.js"; 
 
 // Custom React Hook to fetch Rick and Morty episodes by search term
 const useEpisodes = (search) => {
@@ -8,14 +8,6 @@ const useEpisodes = (search) => {
   const [error, setError] = useState(""); // error message if fetch fails
 
   useEffect(() => {
-
-    // If search is empty, reset states and do not fetch
-    if (!search) {
-      setEpisodes([]);
-      setLoading(false);
-      setError("");
-      return;
-    }
     
     // Fetch episode data from API based on name
     const fetchData = async () => {

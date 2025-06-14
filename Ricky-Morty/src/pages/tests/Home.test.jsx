@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import Home from "../Home";
-import React from "react";
 
 // Mock the lazy-loaded CharacterCard
 vi.mock("../../components/CharacterCard", () => ({

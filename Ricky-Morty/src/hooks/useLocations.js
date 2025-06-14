@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchLocationsByName } from "../services/api.js"; // centralized API call
-
+import { fetchLocationsByName } from "../services/api.js"; 
 // Custom React Hook to fetch location data by search term
 const useLocations = (search) => {
   const [locationData, setLocationData] = useState([]); // holds list of locations

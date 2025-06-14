@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import SearchBar from "../SearchBar"; // adjust path as needed
-
+import SearchBar from "../SearchBar"; 
 describe("SearchBar Component", () => {
   it("renders input with correct placeholder and value", () => {
     const mockValue = "Rick";

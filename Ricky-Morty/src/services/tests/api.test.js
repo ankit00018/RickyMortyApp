@@ -1,4 +1,3 @@
-// src/services/api.test.js
 import axios from 'axios';
 import {
   fetchCharacterById,
